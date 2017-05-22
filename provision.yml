@@ -1,0 +1,53 @@
+- name: Run using a project directory
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+    - docker_service:
+        project_src: compose
+        state: absent
+
+    - docker_service:
+        project_src: compose
+      register: output
+
+    - debug:
+        var: output
+
+    - docker_service:
+        project_src: compose
+        build: no
+      register: output
+
+    - debug:
+        var: output
+
+    - assert:
+        that: "not output.changed "
+
+    - docker_service:
+        project_src: compose
+        build: no
+        stopped: true
+      register: output
+
+    - debug:
+        var: output
+
+    - assert:
+        that:
+          - "not helloworld.compose_helloworld_1.state.running"
+
+    - docker_service:
+        project_src: compose
+        build: no
+        restarted: true
+      register: output
+
+    - debug:
+        var: output
+
+    - assert:
+        that:
+          - "helloworld.compose_helloworld_1.state.running"
+

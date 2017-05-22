@@ -1,0 +1,18 @@
+version: '2'
+services:
+  helloworld:
+    build: ./helloworld
+    image: helloworld:1.0
+    volumes:
+    - ../helloworld:/code
+    - ./logs:/var/log
+    - ./config:/etc/appconfig
+
+  nginx:
+    image: nginx:alpine
+    ports:
+    - "80:80"
+    volumes:
+    - ./nginx/conf.d:/etc/nginx/conf.d
+    links:
+    - helloworld
